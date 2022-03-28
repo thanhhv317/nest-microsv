@@ -21,10 +21,13 @@ async function bootstrap() {
     strategy: activeMQServer
   });
 
+  // start all microservices
+  await app.startAllMicroservices();
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3333;
+  app.enableCors();
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

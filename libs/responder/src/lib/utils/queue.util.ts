@@ -21,7 +21,7 @@ export class QueueUtil {
     try {
       await this._queue
         .send(queue, data)
-        .subscribe(() => Logger.debug(queue, 'QueueUtil send'));
+        .subscribe(() => Logger.log(queue, 'QueueUtil send'));
     } catch (err) {
       Logger.error(err, '', 'QueueUtil send');
     }

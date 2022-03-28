@@ -1,5 +1,5 @@
 import { QUEUE_DESTINATION } from '@nest-micro/constants';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Query, Res } from '@nestjs/common';
 import { QueueUtil } from '@nest-micro/responder';
 import { AppService } from './app.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
@@ -17,19 +17,17 @@ export class AppController {
   }
 
   @Post('/login')
-  login(@Body() data) {
+  login(@Res() res: Response,@Body() data) {
     try {
-      console.log(data);
-      this.queue.send(QUEUE_DESTINATION.LOYALTY_MEMBER, data);
+      this.appService.setClient(data.req_id_uniq, res);
+      return this.queue.send(QUEUE_DESTINATION.LOYALTY_MEMBER, data);
     } catch (err) {
-      console.log(err);
+      Logger.error(err);
     }
-
   }
 
-  // receipt data
   @MessagePattern(QUEUE_PATTERN.LOYALTY_RES)
   handleConsumerServiceControl(@Payload() message) {
-   return message;
+    return this.appService.sendToApp(message);
   }
 }

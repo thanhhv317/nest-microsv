@@ -14,8 +14,6 @@ export class AppService {
 
 
   testHandle(message) {
-    console.log("AAAAAAAAA");
-
-    this.queue.sendToGateWay(message, {});
+    return this.queue.sendToGateWay(message, {});
   }
 }

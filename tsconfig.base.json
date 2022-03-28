@@ -16,7 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@nest-micro/activemq": ["libs/activemq/src/index.ts"],
-      "@nest-micro/mongodb": ["libs/mongodb/src/index.ts"]
+      "@nest-micro/constants": ["libs/constants/src/index.ts"],
+      "@nest-micro/mongodb": ["libs/mongodb/src/index.ts"],
+      "@nest-micro/responder": ["libs/responder/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -11,9 +11,11 @@
   "dependencies": {
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/microservices": "^8.4.3",
     "@nestjs/platform-express": "^8.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
+    "stompit": "^1.0.0",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

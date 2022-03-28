@@ -2,7 +2,10 @@
   "version": 2,
   "projects": {
     "activemq": "libs/activemq",
+    "constants": "libs/constants",
     "gateway": "apps/gateway",
-    "mongodb": "libs/mongodb"
+    "member": "apps/member",
+    "mongodb": "libs/mongodb",
+    "responder": "libs/responder"
   }
 }

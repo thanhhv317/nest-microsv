@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@nest-micro/activemq": ["libs/activemq/src/index.ts"],
+      "@nest-micro/mongodb": ["libs/mongodb/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

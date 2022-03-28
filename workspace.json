@@ -1,4 +1,8 @@
 {
   "version": 2,
-  "projects": {}
+  "projects": {
+    "activemq": "libs/activemq",
+    "gateway": "apps/gateway",
+    "mongodb": "libs/mongodb"
+  }
 }

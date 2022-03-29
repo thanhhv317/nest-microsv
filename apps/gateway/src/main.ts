@@ -11,6 +11,11 @@ import { AppModule } from './app/app.module';
 import { ActiveMQPubSubServer } from '@nest-micro/activemq';
 import { environment } from './environments/environment';
 import { CustomStrategy } from '@nestjs/microservices';
+import { Tracer } from '@nest-micro/tracer';
+Tracer.start({
+  serviceName: 'consumer-gateway-srv',
+  logger: console,
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

@@ -4,7 +4,8 @@ import { Injectable, Logger } from '@nestjs/common';
 export class AppService {
   clients = new Map();
 
-  getData(): { message: string } {
+  getData(metadata = null): { message: string } {
+    console.log(metadata);
     return { message: 'Welcome to gateway!' };
   }
 

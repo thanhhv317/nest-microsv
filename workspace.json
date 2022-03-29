@@ -6,6 +6,7 @@
     "gateway": "apps/gateway",
     "member": "apps/member",
     "mongodb": "libs/mongodb",
-    "responder": "libs/responder"
+    "responder": "libs/responder",
+    "tracer": "libs/tracer"
   }
 }

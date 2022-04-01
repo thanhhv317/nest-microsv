@@ -64,12 +64,6 @@ export class ActiveMQPubSubServer
       this.heartBeat();
     }, 8000);
 
-    // Subscribe Control Queue
-    // this.activeMQBase.subscribe(
-    //   ActiveMQBase.generateQueueName(),
-    //   this.handleControl.bind(this)
-    // );
-
     callback();
   }
 
@@ -78,38 +72,6 @@ export class ActiveMQPubSubServer
       try {
         await this.createManager();
 
-        // this.manager.connect((err, client, reconnect) => {
-        // if (err) {
-        //   return reject(err);
-        // }
-
-        // client.on('error', (error) => {
-        //   // ActiveMQBase.enableDebug &&
-        //   Logger.debug(error, 'ActiveMQ Server Error');
-        //   // client.destroy(error);
-        //   reconnect();
-        // });
-
-        // client.on('connect', () => {
-        //   Logger.log('CONNECTED', 'ActiveMQ Server');
-        // });
-
-        // client.on('end', () => {
-        //   Logger.error('ENDED', '', 'ActiveMQ Server');
-        // });
-
-        // client.on('finish', () => {
-        //   Logger.error('FINISHED', '', 'ActiveMQ Server');
-        // });
-
-        // client.on('close', () => {
-        //   Logger.error('CLOSED', '', 'ActiveMQ Server');
-        // });
-
-        // const channel = new stompit.Channel(this.manager);
-
-        // resolve({ client, channel });
-        // });
         const channel = new stompit.Channel(this.manager);
         ActiveMQBase.setSyncChannel(channel);
         resolve({ channel });
@@ -128,6 +90,7 @@ export class ActiveMQPubSubServer
       this.manager = new stompit.ConnectFailover([connectOptions]);
       ActiveMQBase.setManager(this.manager);
       Logger.log('New Manager', 'ActiveMQ Server');
+      Logger.log(JSON.stringify(connectOptions), 'ActiveMQ Server')
       return this.manager;
     } catch (err) {
       Logger.error(err && err.message, '', 'Create Manager');
@@ -192,7 +155,7 @@ export class ActiveMQPubSubServer
     try {
       this.channel.send(
         {
-          destination: TOPIC_DESTINATION.LOYALTY_SERVICE_CONTROL,
+          destination: TOPIC_DESTINATION.ECOM_SERVICE_CONTROL,
           'content-type': 'text/plain'
         },
         JSON.stringify({ HEART_BEAT_START_TIME: Date.now() }),

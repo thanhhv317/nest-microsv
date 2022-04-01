@@ -19,14 +19,15 @@ export class AppController {
   @Post('/login')
   login(@Res() res: Response,@Body() data) {
     try {
+      console.log(data);
       this.appService.setClient(data.req_id_uniq, res);
-      return this.queue.send(QUEUE_DESTINATION.LOYALTY_MEMBER, data);
+      return this.queue.send(QUEUE_DESTINATION.ECOM_MEMBER, data);
     } catch (err) {
       Logger.error(err);
     }
   }
 
-  @MessagePattern(QUEUE_PATTERN.LOYALTY_RES)
+  @MessagePattern(QUEUE_PATTERN.ECOM_RES)
   handleConsumerServiceControl(@Payload() message) {
     return this.appService.sendToApp(message);
   }

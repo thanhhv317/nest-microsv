@@ -41,7 +41,7 @@ export class QueueUtil {
       if (message) data.message = message;
       if (!isNaN(status)) data.status = status;
 
-      const cmdQueue = QUEUE_DESTINATION.LOYALTY_RES;
+      const cmdQueue = QUEUE_DESTINATION.ECOM_RES;
       this._queue
         .send(cmdQueue, data)
         .subscribe(() => Logger.log(cmdQueue, 'QueueUtil sendToGateWay'));
@@ -57,7 +57,7 @@ export class QueueUtil {
 
       if (response_data) data.response_data = response_data;
 
-      const cmdQueue = QUEUE_DESTINATION.LOYALTY_RES;
+      const cmdQueue = QUEUE_DESTINATION.ECOM_RES;
       this._queue
         .send(cmdQueue, data)
         .subscribe(() =>

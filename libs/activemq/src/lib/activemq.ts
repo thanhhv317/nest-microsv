@@ -87,6 +87,7 @@ export class ActiveMQPubSubServer
       if (this.manager) return this.manager;
 
       const connectOptions = await this.getConfig();
+      console.log("===================",connectOptions)
       this.manager = new stompit.ConnectFailover([connectOptions]);
       ActiveMQBase.setManager(this.manager);
       Logger.log('New Manager', 'ActiveMQ Server');

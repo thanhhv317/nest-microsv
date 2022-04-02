@@ -5,7 +5,7 @@ export const environment = {
   redis_host: '10.11.30.22',
   redis_password: 'UTrKE86N5esPz9v2',
   activemq_port: 61613,
-  activemq_host: '10.11.30.22',
+  activemq_host: '127.0.0.1',
   activemq_connect_host: '/',
   activemq_connect_login: 'admin',
   activemq_connect_passcode: 'admin',

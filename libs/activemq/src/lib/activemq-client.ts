@@ -143,6 +143,7 @@ export class ActiveMQPubSubClient extends ClientProxy {
       if (this.manager) return this.manager;
 
       const connectOptions = await this.getConfig();
+      console.log(connectOptions);
       this.manager = new stompit.ConnectFailover([connectOptions]);
       ActiveMQBase.setManager(this.manager);
       Logger.log('New Manager', 'Client ActiveMQ');
@@ -246,7 +247,7 @@ export class ActiveMQPubSubClient extends ClientProxy {
     try {
       this.publish(
         {
-          pattern: TOPIC_DESTINATION.LOYALTY_SERVICE_CONTROL,
+          pattern: TOPIC_DESTINATION.ECOM_SERVICE_CONTROL,
           data: { HEART_BEAT_START_TIME: Date.now() }
         },
         () => {}

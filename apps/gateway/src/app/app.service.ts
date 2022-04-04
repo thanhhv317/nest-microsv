@@ -32,7 +32,8 @@ export class AppService {
         return;
       }
 
-      const responseData = this.formatResponse(data);
+      // const responseData = this.formatResponse(data);
+      const responseData = (data);
 
       Logger.log(responseData, `GATEWAY sendToApp`);
 

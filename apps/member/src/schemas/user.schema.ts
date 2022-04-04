@@ -5,7 +5,7 @@ import { USERS } from '../constants';
   collection: USERS,
   timestamps: true,
 })
-export class AgentRef {
+export class Users {
   @Prop({
     required: true,
   })
@@ -17,4 +17,4 @@ export class AgentRef {
   phone: string;
 }
 
-export const AgentRefSchema = SchemaFactory.createForClass(AgentRef);
+export const UserSchema = SchemaFactory.createForClass(Users);

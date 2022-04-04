@@ -5,7 +5,7 @@ import { Connection } from 'mongoose';
 
 
 @Module({})
-export class MongodbModule {
+export class MongoDbModule {
   static forRoot(config: MongoDBAddonConfig): DynamicModule {
     this.checkMongoDbConfig(config);
     const { query, mutate } = config;
@@ -15,7 +15,7 @@ export class MongodbModule {
       autoCreate: config.autoCreate || false
     };
     return {
-      module: MongodbModule,
+      module: MongoDbModule,
       imports: [
         MongooseModule.forRoot(query.url, {
           connectionName: query.name,

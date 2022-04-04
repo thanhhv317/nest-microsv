@@ -10,6 +10,6 @@ export const environment = {
   activemq_connect_login: 'admin',
   activemq_connect_passcode: 'admin',
   activemq_connect_heart_beat: '5000,5000',
-  mongodb_query_url: 'mongodb://10.11.30.3:27017/loyalty_fv',
-  mongodb_mutate_url: 'mongodb://10.11.30.3:27017/loyalty_fv'
+  mongodb_query_url: 'mongodb://127.0.0.1:27017/ecom',
+  mongodb_mutate_url: 'mongodb://127.0.0.1:27017/ecom'
 };

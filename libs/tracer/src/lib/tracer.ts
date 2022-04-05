@@ -4,7 +4,14 @@ import * as path from 'path';
 import { FORMAT_TEXT_MAP } from 'opentracing';
 
 import { InitJaegerClient } from './providers/jaeger';
+// import * as pluginService from './plugins/service.plugin';
 import * as pluginService from './plugins/service.plugin';
+import * as pluginController from './plugins/controller.plugin';
+
+import { gatewayApp } from '../../../../apps/gateway/src/app/index';
+import { memberApp } from '../../../../apps/member/src/app/index';
+import { ServerResponse } from 'http';
+
 // Singleton variable holds connection to Jaeger
 let jaeger;
 
@@ -17,8 +24,6 @@ export class Tracer {
   // logger: any;
   constructor(options) {
     this.options = options;
-    // this.logger = options.logger;
-    // Checking singleton value before starting
     if (!jaeger) {
       jaeger = InitJaegerClient(options.serviceName, {
         logger: options.logger,
@@ -43,37 +48,13 @@ export class Tracer {
         logger: options.logger,
       });
     }
-    const originRequire = Module.prototype.require;
-    const cached = [];
 
-    // @ts-ignore: Unreachable code error
-    Module.prototype.require = function require(file) {
-      const { filename } = this;
-
-      const exp = originRequire.bind(this)(file);
-      const absFilePath = file.startsWith('.')
-        ? path.resolve(path.dirname(filename), file)
-        : file;
-      Object.keys(exp).forEach((key) => {
-        const cachedKey = `${absFilePath}::${key}`;
-
-        if (
-          !Object.prototype.hasOwnProperty.call(exp, key) ||
-          cached.includes(cachedKey)
-        )
-          return;
-        cached.push(cachedKey);
-
-        // chua the load duoc file
-        if (pluginService.Pattern.test(absFilePath)) {
-        console.log(absFilePath)
-
-          pluginService.Wrapper(exp, Tracer, options, key);
-        }
-      });
-
-      return exp;
-    };
+    for (let i = 0; i < gatewayApp.length; ++i) {
+      pluginService.Wrapper(Tracer, options, Object.values(gatewayApp[i])[0]);
+    }
+    for (let i = 0; i < memberApp.length; ++i) {
+      pluginService.Wrapper(Tracer, options, Object.values(memberApp[i])[0]);
+    }
   }
 
   /**
@@ -128,16 +109,19 @@ export class Tracer {
   LogOutput(...params) {
     if (this.span)
       params.forEach((param, i) => {
-        if (JSON.stringify(param).length > 64569) {
-          this.span.log({
-            [`output${i}`]: {
-              message: `span size ${JSON.stringify(param).length
-                } is larger than maxSpanSize 64569`,
-            },
-          });
-        } else {
-          this.span.log({ [`output${i}`]: param });
-        }
+        if (param instanceof ServerResponse) {
+         console.log(param.req.prependOnceListener)
+        } else
+          if (JSON.stringify(param).length > 64569) {
+            this.span.log({
+              [`output${i}`]: {
+                message: `span size ${JSON.stringify(param).length
+                  } is larger than maxSpanSize 64569`,
+              },
+            });
+          } else {
+            this.span.log({ [`output${i}`]: param });
+          }
       });
   }
 

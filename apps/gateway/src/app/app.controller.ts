@@ -13,16 +13,17 @@ export class AppController {
 
   @Get()
   getData() {
-    return this.appService.getData();
+    return this.appService.getData({ traceContext: 'listProducts' });
   }
 
   @Post('/users')
-  createUser(@Res() res: Response, @Body() data) {
+  async createUser(@Res() res: Response, @Body() data) {
     try {
       console.log(data);
       this.appService.setClient(data.req_id_uniq, res);
       data.cmdtype = CMD_TYPE.ECOM_MEMBER;
       data.sub_cmd = SUB_CMD.CREATE;
+      data.traceContext="createUser";
       return this.queue.send(QUEUE_DESTINATION.ECOM_MEMBER, data);
     } catch (err) {
       Logger.error(err);
@@ -41,7 +42,7 @@ export class AppController {
   // }
 
   @MessagePattern(QUEUE_PATTERN.ECOM_RES)
-  handleConsumerServiceControl(@Payload() message) {
+  async handleConsumerServiceControl(@Payload() message) {
     return this.appService.sendToApp(message);
   }
 }

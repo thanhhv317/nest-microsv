@@ -23,7 +23,6 @@ import { MongoDbModule } from '@nest-micro/mongodb';
       },
       models: [
         { name: Users.name, schema: UserSchema },
-        
       ],
       autoCreate: true
     }),

@@ -18,6 +18,6 @@ export class AppController {
   @MessagePattern(QUEUE_PATTERN.ECOM_MEMBER)
   handleMember(@Payload() message) {
     Logger.log(message, `handleMember`);
-    return this.appService.memberProcess(message);
+    return this.appService.memberProcess(message, { traceContext: 'handleMember' });
   }
 }

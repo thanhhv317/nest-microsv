@@ -26,6 +26,7 @@ const getMethods = (obj: any) => {
         'toString',
         'valueOf',
         'toLocaleString',
+        'process',
         '__proto__',
         'transformProducts',
         'checkSourceRequest',
@@ -39,8 +40,6 @@ const getMethods = (obj: any) => {
 
 export const Wrapper = (Tracer, options, obj) => {
   const methods = getMethods(obj.prototype);
-
-  console.log(methods);
 
   methods.forEach((method) => {
     return wrap(method)
@@ -76,7 +75,7 @@ export const Wrapper = (Tracer, options, obj) => {
 
             const tracer = new Tracer({ ...options, requestId });
 
-            tracer.SpanStart(`[SERVICES] - ${method}`, parentSpan);
+            tracer.SpanStart(`[CONTROLLER] - ${method}`, parentSpan);
             tracer.LogInput(...args);
 
             const currSpan = tracer.ExportTraceContext();
@@ -131,7 +130,7 @@ export const Wrapper = (Tracer, options, obj) => {
 
             const tracer = new Tracer({ ...options, requestId });
 
-            tracer.SpanStart(`[SERVICES] - ${method}`, parentSpan);
+            tracer.SpanStart(`[CONTROLLER] - ${method}`, parentSpan);
             tracer.LogInput(...args);
 
             const currSpan = tracer.ExportTraceContext();

@@ -15,12 +15,12 @@ export class AppService {
     return { message: 'Welcome to member!' };
   }
 
-  async memberProcess(message) {
+  async memberProcess(message, metadata?: any) {
     const { cmdtype, sub_cmd: subCmd } = message;
     switch (subCmd) {
       case SUB_CMD.CREATE : {
         const userDto = message;
-        this.createUser(userDto);
+        await this.createUser(userDto, metadata);
         break;
       }
       default: 
@@ -33,7 +33,7 @@ export class AppService {
     return this.queue.sendToGateWay(message, {});
   }
 
-  async createUser(userDto) {
+  async createUser(userDto, metadata?: any) {
     console.log("==========")
     const user = await this.userRepository.createUser(userDto);
     console.log("========== AAAAAAAA")

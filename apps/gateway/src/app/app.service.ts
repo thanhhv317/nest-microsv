@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 export class AppService {
   clients = new Map();
 
-  getData(metadata = null): { message: string } {
+  getData(metadata?:any): { message: string } {
     console.log(metadata);
     return { message: 'Welcome to gateway!' };
   }
@@ -21,9 +21,9 @@ export class AppService {
     return Date.now() + '_' + Math.random().toString(36).substring(2, 9);
   }
 
-  sendToApp(data) {
+  async sendToApp(data, metadata?: any) {
     try {
-      const client = this.getClient(data && data.req_id_uniq);
+      const client = await this.getClient(data && data.req_id_uniq);
       if (!client) {
         Logger.log(
           `${data && data.req_id_uniq} ${data && data.req_from}`,
@@ -33,7 +33,7 @@ export class AppService {
       }
 
       // const responseData = this.formatResponse(data);
-      const responseData = (data);
+      const responseData = await this.formatResponse(data, metadata);
 
       Logger.log(responseData, `GATEWAY sendToApp`);
 
@@ -43,7 +43,7 @@ export class AppService {
     }
   }
 
-  formatResponse(data) {
+  async formatResponse(data, metadata?: any) {
     try {
       delete data.req_id_uniq;
       delete data.req_from;

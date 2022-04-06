@@ -12,4 +12,5 @@ export const environment = {
   activemq_connect_heart_beat: '5000,5000',
   mongodb_query_url: 'mongodb://127.0.0.1/ecom',
   mongodb_mutate_url: 'mongodb://127.0.0.1/ecom',
+  socket_port: 4329
 };

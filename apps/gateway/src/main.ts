@@ -12,6 +12,7 @@ import { ActiveMQPubSubServer } from '@nest-micro/activemq';
 import { environment } from './environments/environment';
 import { CustomStrategy } from '@nestjs/microservices';
 import { Tracer } from '@nest-micro/tracer';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 Tracer.start({
   serviceName: 'consumer-gateway-srv',
@@ -27,6 +28,9 @@ async function bootstrap() {
   app.connectMicroservice<CustomStrategy>({
     strategy: activeMQServer
   });
+
+  // websocket
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   // start all microservices
   await app.startAllMicroservices();

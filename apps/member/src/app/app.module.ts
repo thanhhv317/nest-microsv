@@ -25,7 +25,8 @@ import { MongoDbModule } from '@nest-micro/mongodb';
         { name: Users.name, schema: UserSchema },
       ],
       autoCreate: true
-    }),
+    }
+    ),
   ],
   controllers: [AppController],
   providers: [
@@ -33,4 +34,4 @@ import { MongoDbModule } from '@nest-micro/mongodb';
     UsersRepository
   ],
 })
-export class AppModule {}
+export class AppModule { }

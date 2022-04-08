@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { PROVIDER } from './constants';
-import { FormatUtil, QueueUtil } from './utils';
+import { FormatUtil, QueueUtil, ResponseUtil } from './utils';
 
 @Module({})
 export class ResponderModule {
@@ -14,9 +14,10 @@ export class ResponderModule {
           useValue: config
         },
         QueueUtil,
-        FormatUtil
+        FormatUtil,
+        ResponseUtil
       ],
-      exports: [QueueUtil, FormatUtil]
+      exports: [QueueUtil, FormatUtil, ResponseUtil]
     };
   }
 }

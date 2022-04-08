@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { QueueUtil } from '@nest-micro/responder';
 import { SUB_CMD } from '@nest-micro/constants';
 import { UsersRepository } from './repositories';
+import { ResponseUtil } from 'libs/responder/src/lib/utils';
 
 @Injectable()
 export class AppService {
 
   constructor(
     private readonly queue: QueueUtil,
-    protected readonly userRepository: UsersRepository
+    protected readonly userRepository: UsersRepository,
+    private readonly responseUtil: ResponseUtil
   ) { }
 
   getData(): { message: string } {
@@ -41,4 +43,13 @@ export class AppService {
     
     return this.queue.sendToGateWay(userDto, user);
   }
+
+  helloProcess(payload, metadata?: any) {
+    const data = {
+      foo: 'this is message to welcome u',
+      bar: 'https://via.placeholder.com/250'
+    }
+    this.responseUtil.success({ ...payload, ...data });
+  }
+
 }

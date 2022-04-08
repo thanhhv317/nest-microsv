@@ -21,6 +21,7 @@ export class AppService {
     return Date.now() + '_' + Math.random().toString(36).substring(2, 9);
   }
 
+  // send to app - not use with websocket
   async sendToApp(data, metadata?: any) {
     try {
       const client = await this.getClient(data && data.req_id_uniq);

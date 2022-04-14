@@ -3,6 +3,7 @@ import { QueueUtil } from '@nest-micro/responder';
 import { SUB_CMD } from '@nest-micro/constants';
 import { UsersRepository } from './repositories';
 import { ResponseUtil } from 'libs/responder/src/lib/utils';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class AppService {
@@ -36,11 +37,8 @@ export class AppService {
   }
 
   async createUser(userDto, metadata?: any) {
-    console.log("==========")
-    const user = await this.userRepository.createUser(userDto);
-    console.log("========== AAAAAAAA")
-    
-    
+    let user = await this.userRepository.createUser(userDto);
+    user = new UserEntity(user);
     return this.queue.sendToGateWay(userDto, user);
   }
 

@@ -182,7 +182,6 @@ export class WebsocketGateway {
       const socket =
         this.clients[data.client_socket_id] ||
         this.clients[this.mapClients[data.initiator]];
-      // const socket = this.clients[data.client_socket_id];
       if (!socket || !socket.send) {
         if (data.client_host_name && data.client_host_name !== osHostname) {
          

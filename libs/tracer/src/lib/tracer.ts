@@ -31,7 +31,7 @@ export class Tracer {
     }
 
     this.jaeger = jaeger;
-    this.requestId = this.options.requestId;
+    this.requestId = this?.options?.requestId;
     this.span = undefined;
     this.parentSpan = undefined;
   }

@@ -1,3 +1,4 @@
+import { TracerModule } from '@nest-micro/tracer';
 import { Module } from '@nestjs/common';
 import { CommandService } from '../command/command.service';
 import { WebsocketGateway } from './websocket.gateway';

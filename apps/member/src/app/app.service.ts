@@ -23,7 +23,7 @@ export class AppService {
     switch (subCmd) {
       case SUB_CMD.CREATE : {
         const userDto = message;
-        await this.createUser(userDto, metadata);
+        return await this.createUser(userDto, metadata);
         break;
       }
       default: 
@@ -47,6 +47,7 @@ export class AppService {
       foo: 'this is message to welcome u',
       bar: 'https://via.placeholder.com/250'
     }
+    payload.ctx = 'xyz';
     this.responseUtil.success({ ...payload, ...data });
   }
 

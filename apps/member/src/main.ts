@@ -13,10 +13,10 @@ import { environment } from './environments/environment';
 
 import { Tracer } from '@nest-micro/tracer';
 
-Tracer.start({
-  serviceName: 'consumer-member-srv',
-  logger: console,
-});
+// Tracer.start({
+//   serviceName: 'consumer-member-srv',
+//   logger: console,
+// });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

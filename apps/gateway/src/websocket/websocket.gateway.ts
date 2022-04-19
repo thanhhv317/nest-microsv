@@ -13,6 +13,7 @@ import { WsExceptionFilter } from '../filter';
 import { environment } from '../environments/environment';
 import { ErrCode, MOBILE_QUEUE_BASE_PATTERN, osHostname, State } from '@nest-micro/constants';
 import { ActiveMQPubSubClient } from '@nest-micro/activemq';
+import { Tracer } from '@nest-micro/tracer';
 
 @WebSocketGateway(+environment.socket_port, {
   transports: ['websocket', 'polling']
@@ -29,7 +30,8 @@ export class WebsocketGateway {
   private wss;
 
   constructor(
-    private readonly commandService: CommandService
+    private readonly commandService: CommandService,
+    // private readonly tracer: Tracer
   ) {}
 
   afterInit(wss) {
@@ -93,6 +95,10 @@ export class WebsocketGateway {
     @ConnectedSocket() socket: any,
     @MessageBody(MessageValidationPipe) payload: Message
   ) {
+    // this.tracer.SpanStart('test', '3123');
+    // this.tracer.LogInput({...payload});
+
+    // this.tracer.SpanFinish();
     payload.req_id = this.generateReqId();
     Logger.log(`${payload.req_id} ${socket.client_id}`, 'WS Req ID from');
     this.processData(socket, payload);

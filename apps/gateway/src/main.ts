@@ -14,10 +14,10 @@ import { CustomStrategy } from '@nestjs/microservices';
 import { Tracer } from '@nest-micro/tracer';
 import { WsAdapter } from '@nestjs/platform-ws';
 
-Tracer.start({
-  serviceName: 'consumer-gateway-srv',
-  logger: console,
-});
+// Tracer.start({
+//   serviceName: 'consumer-gateway-srv',
+//   logger: console,
+// });
 
 
 async function bootstrap() {

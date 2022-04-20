@@ -43,6 +43,7 @@ export class Tracer {
    * @param {Object} options.logger
    */
   static start(options) {
+    console.log(options);
     if (!jaeger) {
       jaeger = InitJaegerClient(options.serviceName, {
         logger: options.logger,

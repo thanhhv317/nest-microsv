@@ -33,17 +33,6 @@ export class AppController {
     }
   }
 
-  // @Get('/users')
-  // listUsers(@Res() res: Response, @Query() query: any) {
-  //   try {
-  //     console.log(query);
-  //     this.appService.setClient(data.req_id_uniq, res);
-  //     return this.queue.send(QUEUE_DESTINATION.ECOM_MEMBER, data);
-  //   } catch (err) {
-  //     Logger.error(err);
-  //   }
-  // }
-
   @MessagePattern(QUEUE_PATTERN.ECOM_RES)
   async handleConsumerServiceControl(@Payload() message) {
     // return this.appService.sendToApp(message);
@@ -51,11 +40,4 @@ export class AppController {
     this.socket.sendToApp(message);
     return;
   }
-
-  // @MessagePattern(MOBILE_QUEUE_PATTERN.BACKEND_RES)
-  // handleResponseConsumerUser(@Payload() data) {
-  //   console.log(`nhan dc roi ne:`, data);
-  //   this.socket.sendToApp(data);
-  //   return;
-  // }
 }

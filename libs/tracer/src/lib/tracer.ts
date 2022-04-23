@@ -53,9 +53,7 @@ export class Tracer {
     for (let i = 0; i < gatewayApp.length; ++i) {
       pluginService.Wrapper(Tracer, options, Object.values(gatewayApp[i])[0]);
     }
-    for (let i = 0; i < memberApp.length; ++i) {
-      pluginService.Wrapper(Tracer, options, Object.values(memberApp[i])[0]);
-    }
+    
   }
 
   /**

@@ -109,7 +109,7 @@ export class Tracer {
     if (this.span)
       params.forEach((param, i) => {
         if (param instanceof ServerResponse) {
-         console.log(param.req.prependOnceListener)
+        //  console.log(param.req.prependOnceListener)
         } else
           if (JSON.stringify(param).length > 64569) {
             this.span.log({

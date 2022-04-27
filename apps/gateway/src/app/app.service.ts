@@ -33,7 +33,6 @@ export class AppService {
         return;
       }
 
-      // const responseData = this.formatResponse(data);
       const responseData = await this.formatResponse(data, metadata);
 
       Logger.log(responseData, `GATEWAY sendToApp`);

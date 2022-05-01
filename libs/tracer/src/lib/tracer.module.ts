@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
+import { TracingService } from './tracer';
 
 @Module({
   controllers: [],
-  providers: [],
-  exports: [],
+  providers: [TracingService],
+  exports: [TracingService],
 })
 export class TracerModule {}

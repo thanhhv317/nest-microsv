@@ -1,64 +1,188 @@
-import * as Module from 'module';
-import * as path from 'path';
-
-import { FORMAT_TEXT_MAP } from 'opentracing';
-
+import { Injectable } from '@nestjs/common';
 import { InitJaegerClient } from './providers/jaeger';
-// import * as pluginService from './plugins/service.plugin';
-import * as pluginService from './plugins/service.plugin';
-import * as pluginController from './plugins/controller.plugin';
-
-import { gatewayApp } from '../../../../apps/gateway/src/app/index';
-import { memberApp } from '../../../../apps/member/src/app/index';
+import { FORMAT_TEXT_MAP } from 'opentracing';
+import * as shimmer from 'shimmer';
 import { ServerResponse } from 'http';
+import * as clone from 'clone';
 
-// Singleton variable holds connection to Jaeger
+const getMethods = (obj: any) => {
+  const properties = new Set();
+  let currentObj = obj;
+  do {
+    Object.getOwnPropertyNames(currentObj).map((item) => properties.add(item));
+  } while ((currentObj = Object.getPrototypeOf(currentObj)));
+  return [...properties.keys()].filter(
+    (item) =>
+      typeof obj[item.toString()] === 'function' &&
+      ![
+        'constructor',
+        '__defineGetter__',
+        '__defineSetter__',
+        '__lookupGetter__',
+        '__lookupSetter__',
+        'hasOwnProperty',
+        'hasOwnProperty',
+        'hasOwnProperty',
+        'isPrototypeOf',
+        'propertyIsEnumerable',
+        'toString',
+        'valueOf',
+        'toLocaleString',
+        'GetMetric',
+      ].includes(item.toString()),
+  );
+};
+
 let jaeger;
 
-export class Tracer {
+@Injectable()
+export class TracingService {
   options: any;
-  jaeger: any;
-  requestId: any;
-  span: any;
   parentSpan: any;
-  // logger: any;
-  constructor(options) {
-    this.options = options;
+  jaeger: any;
+  span: any;
+  requestId: any;
+  constructor(
+  ) {
     if (!jaeger) {
-      jaeger = InitJaegerClient(options.serviceName, {
-        logger: options.logger,
+      jaeger = InitJaegerClient("consumer-ecom-srv", {
+        logger: console,
       });
     }
-
+    
     this.jaeger = jaeger;
-    this.requestId = this?.options?.requestId;
     this.span = undefined;
     this.parentSpan = undefined;
   }
 
-  /**
-   * Entry method to run the tracer for the whole application
-   * @param {Object} options
-   * @param {String} options.serviceName
-   * @param {Object} options.logger
-   */
-  static start(options) {
-    console.log(options);
-    if (!jaeger) {
-      jaeger = InitJaegerClient(options.serviceName, {
-        logger: options.logger,
-      });
-    }
+  init(options) {
+    this.options = options;
+    // this.logger = options.logger;
+    // Checking singleton value before starting
 
-    for (let i = 0; i < gatewayApp.length; ++i) {
-      pluginService.Wrapper(Tracer, options, Object.values(gatewayApp[i])[0]);
-    }
-    
+    this.requestId = this.options.requestId;
   }
 
-  /**
-   * Export tracing context for inherited span
-   */
+  start(obj, spanName) {
+    const methods = getMethods(obj.prototype);
+    methods.forEach((method) => wrap(method));
+    function wrap(method) {
+      shimmer.wrap(obj.prototype, method, function wrapOrigin(original) {
+        const isAsyncOrPromiseFn = original.toString().includes('function*');
+
+        if (isAsyncOrPromiseFn) {
+          return async function wrappedFunction(...args) {
+            try {
+              if (!args.length || args[args.length - 1] == null || !args[args.length - 1]?.traceContext) {
+                let result;
+                let error;
+                try {
+                  result = await original.apply(this, [...args]);
+                } catch (e) {
+                  error = e;
+                }
+
+                if (error) throw error;
+                return result;
+              }
+              else {
+                // if (!args.length || !args[args.length - 1]?.traceContext)
+                  // args.push({ traceContext: '' });
+                const metadata = clone(args.pop());
+                const traceCxtArr = metadata.traceContext.split(',');
+                const requestId = traceCxtArr.shift();
+                const parentSpan = traceCxtArr.pop();
+                const rootSpan = traceCxtArr.shift();
+
+                const tracer = new TracingService();
+                tracer.init({ requestId });
+                
+
+                tracer.SpanStart(`${spanName} - ${method}`, parentSpan);
+                tracer.LogInput(...args);
+
+                const currSpan = tracer.ExportTraceContext();
+
+                metadata.traceContext = `${requestId},${rootSpan || currSpan
+                  },${currSpan}`;
+
+                let result;
+                let error;
+
+                try {
+                  result = await original.apply(this, [...args, metadata]);
+                } catch (e) {
+                  error = e;
+                }
+
+                if (error) tracer.LogError(error);
+                if (result) tracer.LogOutput(result);
+                tracer.SpanFinish();
+
+                if (error) throw error;
+                return result;
+              }
+            } catch (error) {
+              console.log(error)
+            }
+          }
+        } else {
+          return function wrappedFunction(...args) {
+            if (!args.length || args[args.length - 1] == null || !args[args.length - 1].traceContext) {
+              let result;
+              let error;
+              try {
+                result = original.apply(this, [...args]);
+              } catch (e) {
+                error = e;
+              }
+
+              if (error) throw error;
+              return result;
+            }
+            else {
+                  const metadata = clone(args.pop());
+              const traceCxtArr = metadata.traceContext.split(',');
+              const requestId = traceCxtArr.shift();
+              const parentSpan = traceCxtArr.pop();
+              const rootSpan = traceCxtArr.shift();
+
+              const tracer = new TracingService();
+              tracer.init({ requestId });
+
+              tracer.SpanStart(`${spanName} - ${method}`, parentSpan);
+              tracer.LogInput(...args);
+
+              const currSpan = tracer.ExportTraceContext();
+
+              metadata.traceContext = `${requestId},${rootSpan || currSpan},${currSpan}`;
+
+              let result;
+              let error;
+              try {
+                result = original.apply(this, [...args, metadata]);
+              } catch (e) {
+                error = e;
+              }
+              if (error) {
+                tracer.LogError(error);
+                tracer.SpanFinish();
+              }
+              if (!!result) {
+                tracer.LogOutput(result)
+                tracer.SpanFinish();
+              };
+
+              if (error) throw error;
+              return result;
+            };
+          }
+        }
+      });
+    }
+  }
+
+
   ExportTraceContext() {
     const context = {
       requestId: '',
@@ -76,6 +200,7 @@ export class Tracer {
     if (parentSpanTraceContext) {
       this.parentSpan = this.jaeger.extract(FORMAT_TEXT_MAP, {
         'uber-trace-id': parentSpanTraceContext,
+        span: parentSpanTraceContext
       });
     }
 
@@ -109,7 +234,7 @@ export class Tracer {
     if (this.span)
       params.forEach((param, i) => {
         if (param instanceof ServerResponse) {
-        //  console.log(param.req.prependOnceListener)
+          //  console.log(param.req.prependOnceListener)
         } else
           if (JSON.stringify(param).length > 64569) {
             this.span.log({
@@ -141,4 +266,5 @@ export class Tracer {
   Tag(name, value) {
     if (this.span) this.span.setTag(name, value);
   }
+
 }

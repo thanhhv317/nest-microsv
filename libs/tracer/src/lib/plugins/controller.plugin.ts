@@ -67,7 +67,7 @@ export const Wrapper = (Tracer, options, obj) => {
             return result;
           }
           else {
-            const metadata = (args.pop());
+            const metadata = clone(args.pop());
             const traceCxtArr = metadata.traceContext.split(',');
             const requestId = traceCxtArr.shift();
             const parentSpan = traceCxtArr.pop();
@@ -122,7 +122,7 @@ export const Wrapper = (Tracer, options, obj) => {
             return result;
           }
           else {
-            const metadata = (args.pop());
+            const metadata = clone(args.pop());
             const traceCxtArr = metadata.traceContext.split(',');
             const requestId = traceCxtArr.shift();
             const parentSpan = traceCxtArr.pop();

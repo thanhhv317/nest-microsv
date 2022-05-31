@@ -6,12 +6,6 @@ export const osHostname = os.hostname().toUpperCase();
 export const MobileCmd = {
   HELLO: 1000,
   SET_DEVICE_TOKEN: 1,
-  BALANCE: 3,
-  TRANSFER: 4,
-  TOPUP: 6,
-  BILLPAY: 7,
-  CHANGE_PASS: 16,
-  SYNC_NOTI: 21,
   STANDARD_REPLY: 12,
   SYNC_TRANS: 13,
   ECOM_MEMBER: 14
